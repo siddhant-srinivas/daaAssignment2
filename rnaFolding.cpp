@@ -105,7 +105,8 @@ vector<pair<int, int> > matchingPairs (const string& rna_sequence, vector<vector
 }
 
 int main(){
-    string rna_sequence = "CAUACGUCGGCUACCCUGAGCCGGUUACGAGCAACUUAUUA";
+    string rna_sequence = "AAGACUAUACUUUCAGGGAUCAUUUCUAUAGUUUGUUACUAGAGAAGUUUCUCUGAACGUGUAUAGCACUGAAAACCACAAAGAAGAGGUGCAGCAUUAUCUCCUAAGUGUAAAGCCGGCUCUUGAUGUUGCUUUGCUGCAACUGCCAUUUGCCAUUGAUGAUCGUUCUUUUCUUCCUUUGGGAGACUGGGAAGGAAAGGAUGCAAUCUGAGUGG";
+    string actualDotBracket = "(((((((((((..(((((.....))))).)))))).))))).......(((.((......)))))..........((((..............((((((((((((..(((.......((((..(((((((((......))))).))))..)))).........)))((..(((((((...))))))).))..)))))))))))).......))))";
     cout << "The given rna sequence is: " << rna_sequence << endl;
     //string rna_sequence = "ACCGGUAGU";
     int rnaLen = rna_sequence.length();
@@ -113,7 +114,13 @@ int main(){
         cout << "There are 0 matching pairs. Please enter another sequence." << endl;
         return 1;
     }
+    int brackCount = 0;
+    for(char c : actualDotBracket){
+        if(c == '(') brackCount++;
+    }
     cout << "The number of nucleotides in the sequence is: " << rnaLen << endl;
+    cout << "The number of pairs in the actual secondary structure is: " << brackCount << endl;
+    cout << "The actual dot bracket structure is: " << actualDotBracket << endl;
     vector<vector<int> > numPairs = findMaxPairs(rna_sequence);
     //printMatrix(numPairs);
     vector<vector<int> > splitIndices = findSplits(rna_sequence, numPairs);
@@ -130,7 +137,7 @@ int main(){
         dotBracket[leftBrack] = '(';
         dotBracket[rightBrack] = ')';
     }
-    cout << "The dot bracket structure is: " << dotBracket << endl;
+    cout << "The predicted dot bracket structure is: " << dotBracket << endl;
     cout << "Using 1-based indexing, the list of indices at which bases are paired is: " << endl;
     for(const pair<int,int> pairInst : pairs){
         cout << "[" << pairInst.first + 1<< "]" << "," << "[" << pairInst.second + 1 << "]" << endl;
