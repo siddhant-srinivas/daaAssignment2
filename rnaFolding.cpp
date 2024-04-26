@@ -3,7 +3,11 @@
 #include<string>
 #include<queue>
 #include<utility>
+#include<chrono>
+using namespace std::chrono;
 using namespace std;
+
+#define line "\n------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 
 bool pairMatch(char base1, char base2){
     return (base1 == 'A' && base2 == 'U') ||
@@ -15,7 +19,7 @@ bool pairMatch(char base1, char base2){
 vector<vector<int> > findMaxPairs(const string& rna_sequence) {
     int n = rna_sequence.length();
     int edge = n - 5;
-    vector<vector<int> > dp(n, vector<int>(n, 0));
+    vector<vector<int>> dp(n, vector<int>(n, 0));
 
     for(int i = 0; i < edge; i++){
         int row = i;
@@ -104,29 +108,30 @@ vector<pair<int, int> > matchingPairs (const string& rna_sequence, vector<vector
     return matchingIndices;
 }
 
-int main(){
-    string rna_sequence = "AAGACUAUACUUUCAGGGAUCAUUUCUAUAGUUUGUUACUAGAGAAGUUUCUCUGAACGUGUAUAGCACUGAAAACCACAAAGAAGAGGUGCAGCAUUAUCUCCUAAGUGUAAAGCCGGCUCUUGAUGUUGCUUUGCUGCAACUGCCAUUUGCCAUUGAUGAUCGUUCUUUUCUUCCUUUGGGAGACUGGGAAGGAAAGGAUGCAAUCUGAGUGG";
-    string actualDotBracket = "(((((((((((..(((((.....))))).)))))).))))).......(((.((......)))))..........((((..............((((((((((((..(((.......((((..(((((((((......))))).))))..)))).........)))((..(((((((...))))))).))..)))))))))))).......))))";
-    cout << "The given rna sequence is: " << rna_sequence << endl;
-    //string rna_sequence = "ACCGGUAGU";
-    int rnaLen = rna_sequence.length();
-    if(rnaLen <= 5){
-        cout << "There are 0 matching pairs. Please enter another sequence." << endl;
-        return 1;
-    }
-    int brackCount = 0;
-    for(char c : actualDotBracket){
-        if(c == '(') brackCount++;
-    }
-    cout << "The number of nucleotides in the sequence is: " << rnaLen << endl;
+void printOutputs(string rna_sequence,int rnaLen,string actualDotBracket,int numOptimalPairs,int brackCount,string dotBracket, vector<pair<int,int>> pairs){
+    cout << line << endl;
+    cout << "The given rna sequence is [Mus musculus SSU rRNA]: \n" << rna_sequence << endl;
+    cout << line << endl;
+    cout << "The length of the nucleotides are: "<< rnaLen << endl;
+    cout << line << endl;
     cout << "The number of pairs in the actual secondary structure is: " << brackCount << endl;
-    cout << "The actual dot bracket structure is: " << actualDotBracket << endl;
-    vector<vector<int> > numPairs = findMaxPairs(rna_sequence);
-    //printMatrix(numPairs);
-    vector<vector<int> > splitIndices = findSplits(rna_sequence, numPairs);
-    //printMatrix(splitIndices);
-    vector<pair<int,int> > pairs = matchingPairs(rna_sequence, splitIndices);
-    cout << "The number of optimal pairs obtained for the above RNA sequence is: " << numPairs[rnaLen-6][rnaLen-1] << endl;
+    cout << "The number of optimal pairs obtained for the above RNA sequence is: " << numOptimalPairs << endl;
+    cout << line << endl;
+    cout << "The actual dot bracket structure is: \n" << actualDotBracket << endl << endl;
+    cout << "The predicted dot bracket structure is: \n" << dotBracket << endl ;
+    cout << line << endl;
+    // cout << "Using 1-based indexing, the list of indices at which bases are paired is: \n" << endl;
+    // for(const pair<int,int> pairInst : pairs){
+    //     cout << "[" << pairInst.first + 1<< "]" << "," << "[" << pairInst.second + 1 << "]" << endl;
+    // }
+}
+
+string calculateOptimalSequence(string rna_sequence, vector<vector<int>> &numPairs, vector<vector<int>> &splitIndices, vector<pair<int,int>> &pairs){
+    numPairs = findMaxPairs(rna_sequence);
+    splitIndices = findSplits(rna_sequence, numPairs);
+    pairs = matchingPairs(rna_sequence, splitIndices);
+    
+    int rnaLen = rna_sequence.length();
     string dotBracket;
     for(int i = 0; i < rnaLen; i++){
         dotBracket.push_back('.');
@@ -137,10 +142,47 @@ int main(){
         dotBracket[leftBrack] = '(';
         dotBracket[rightBrack] = ')';
     }
-    cout << "The predicted dot bracket structure is: " << dotBracket << endl;
-    cout << "Using 1-based indexing, the list of indices at which bases are paired is: " << endl;
-    for(const pair<int,int> pairInst : pairs){
-        cout << "[" << pairInst.first + 1<< "]" << "," << "[" << pairInst.second + 1 << "]" << endl;
+    return dotBracket;
+}
+
+void predictSecondaryStructure(string rna_sequence,string actualDotBracket){
+    int rnaLen = rna_sequence.length();
+    if(rnaLen <= 5){
+        cout << "There are 0 matching pairs. Please enter another sequence." << endl;
+        return;
     }
+    int brackCount = 0;
+    for(char c : actualDotBracket){
+        if(c == '(') brackCount++;
+    }
+    vector<vector<int>> numPairs, splitIndices;
+    vector<pair<int,int>> pairs;
+    
+    string dotBracket = calculateOptimalSequence(rna_sequence,numPairs,splitIndices,pairs);
+
+    printOutputs(rna_sequence, rnaLen, actualDotBracket, numPairs[rnaLen-6][rnaLen-1], brackCount, dotBracket, pairs);
+
+}
+
+void computeExecutionTime(string rna_sequence,string actualDotBracket){
+    
+    auto start = high_resolution_clock::now();
+
+    predictSecondaryStructure(rna_sequence,actualDotBracket);
+
+    auto stop = high_resolution_clock::now();
+
+    auto duration = duration_cast<milliseconds>(stop - start);
+
+    cout << "\nThe time taken for the program to execute is: " << duration.count() << "ms" << endl;
+}
+int main(){
+    string rna_sequence = "UACCUGGUUGAUCCUGCCAGUAGCAUAUGCUUGUCUCAAAGAUUAAGCCAUGCAUGUCUAAGUACGCACGGCCGGUACAGUGAAACUGCGAAUGGCUCAUUAAAUCAGUUAUGGUUCCUUUGGUCGCUCGCUCCUCUCCUACUUGGAUAACUGUGGUAAUUCUAGAGCUAAUACAUGCCGACGGGCGCUGACCCCCCUUCCCGGGGGGGGAUGCGUGCAUUUAUCAGAUCAAAACCAACCCGGUGAGCUCCCUCCCGGCUCCGGCCGGGGGUCGGGCGCCGGCGGCUUUGGUGACUCUAGAUAACCUCGGGCCGAUCGCACGCCCCCCGUGGCGGCGACGACCCAUUCGAACGUCUGCCCUAUCAACUUUCGAUGGUAGUCGCCGUGCCUACCAUGGUGACCACGGGUGACGGGGAAUCAGGGUUCGAUUCCGGAGAGGGAGCCUGAGAAACGGCUACCACAUCCAAGGAAGGCAGCAGGCGCGCAAAUUACCCACUCCCGACCCGGGGAGGUAGUGACGAAAAAUAACAAUACAGGACUCUUUCGAGGCCCUGUAAUUGGAAUGAGUCCACUUUAAAUCCUUUAACGAGGAUCCAUUGGAGGGCAAGUCUGGUGCCAGCAGCCGCGGUAAUUCCAGCUCCAAUAGCGUAUAUUAAAGUUGCUGCAGUUAAAAAGCUCGUAGUUGGAUCUUGGGAGCGGGCGGGCGGUCCGCCGCGAGGCGAGUCACCGCCCGUCCCCGCCCCUUGCCUCUCGGCGCCCCCUCGAUGCUCUUAGCUGAGUGUCCCGCGGGGCCCGAAGCGUUUACUUUGAAAAAAUUAGAGUGUUCAAAGCAGGCCCGAGCCGCCUGGAUACCGCAGCUAGGAAUAAUGGAAUAGGACCGCGGUUCUAUUUUGUUGGUUUUCGGAACUGAGGCCAUGAUUAAGAGGGACGGCCGGGGGCAUUCGUAUUGCGCCGCUAGAGGUGAAAUUCUUGGACCGGCGCAAGACGGACCAGAGCGAAAGCAUUUGCCAAGAAUGUUUUCAUUAAUCAAGAACGAAAGUCGGAGGUUCGAAGACGAUCAGAUACCGUCGUAGUUCCGACCAUAAACGAUGCCGACUGGCGAUGCGGCGGCGUUAUUCCCAUGACCCGCCGGGCAGCUUCCGGGAAACCAAAGUCUUUGGGUUCCGGGGGGAGUAUGGUUGCAAAGCUGAAACUUAAAGGAAUUGACGGAAGGGCACCACCAGGAGUGGAGCCUGCGGCUUAAUUUGACUCAACACGGGAAACCUCACCCGGCCCGGACACGGACAGGAUUGACAGAUUGAUAGCUCUUUCUCGAUUCCGUGGGUGGUGGUGCAUGGCCGUUCUUAGUUGGUGGAGCGAUUUGUCUGGUUAAUUCCGAUAACGAACGAGACUCUGGCAUGCUAACUAGUUACGCGACCCCCGAGCGGUCGGCGUCCCCCAACUUCUUAGAGGGACAAGUGGCGUUCAGCCACCCGAGAUUGAGCAAUAACAGGUCUGUGAUGCCCUUAGAUGUCCGGGGCUGCACGCGCGCUACACUGACUGGCUCAGCGUGUGCCUACCCUACGCCGGCAGGCGCGGGUAACCCGUUGAACCCCAUUCGUGAUGGGGAUCGGGGAUUGCAAUUAUUCCCCAUGAACGAGGAAUUCCCAGUAAGUGCGGGUCAUAAGCUUGCGUUGAUUAAGUCCCUGCCCUUUGUACACACCGCCCGUCGCUACUACCGAUUGGAUGGUUUAGUGAGGCCCUCGGAUCGGCCCCGCCGGGGUCGGCCCACGGCCCUGGCGGAGCGCUGAGAAGACGGUCGAACUUGACUAUCUAGAGGAAGUAAAAGUCGUAACAAGGUUUCCGUAGGUGAACCUGCGGAAGGAUCAUUA";
+    string actualDotBracket = "...((((.........))))(((.((((((...(.((..((.....(((.(((..((....((....((..........))...)).))......(((.......(((.(.(..((....(((....................((.....((.(((.....))).))......)).........((((...((((((......))))))...))))((..(((((..............(((.((.(((((((((((((....))))))))).))))...)))))....(......)..)))))......)).(.((((.((((......)))))))))...)))...))).).))).(((....(((....(((((((.........))))))))))......)))...(((.((((....))))....)))))).((.(((..........))).)).(.((....)).)...)))))).).....(.(((....(((.....)))..)))).)...)).).....(((.(((((.(((....))).).))))..)))......((..(...........)..)).........(((((........((((.....((....)).......)))).)))))..)))))).))).........(.(.......(.((...(((.((.....((.(.((((((((((((((((....)))).)..))))))))))).).))....((.(..(((.(((((.(.(((((((......)))))))..).))))))))).))..((((((.(.......((..((.......))((((.......))))...))......).)))..))).......((.(..(.((.((...............)).)).)..)))....))...(((((((..(...((((..(((.((((((((...((........))......)))))))).))).......((....))...))))..)..))).)))..))))...)).)....((((((....(...((((.........))))...).))))))..........(((.((.(((..(.((((((.(((((....))))))))))).)..)))...((....))...)).....))).).).(((......";
+    
+    
+    computeExecutionTime(rna_sequence,actualDotBracket);
+
+    
     return 0;
 }
