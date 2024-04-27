@@ -85,7 +85,7 @@ void printMatrix(vector<vector<int> > dp){
     }
 }
 
-vector<pair<int, int> > matchingPairs (const string& rna_sequence, vector<vector<int> > &splitIndices){
+vector<pair<int, int> > matchingPairs (const string& rna_sequence, vector<vector<int>> &splitIndices){
     int n = rna_sequence.length();
     int edge = n - 5;
     queue<pair<int,int> > q;
