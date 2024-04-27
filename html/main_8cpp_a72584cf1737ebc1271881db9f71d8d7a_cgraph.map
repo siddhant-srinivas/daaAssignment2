@@ -1,0 +1,18 @@
+<map id="predictSecondaryStructure" name="predictSecondaryStructure">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,104,181,129"/>
+<area shape="rect" id="Node000002" href="$rna_8h.html#a86046fcb0c17123e8ba030f06e2c6517" title=" " alt="" coords="229,55,407,80"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="151,101,246,80,247,86,152,107"/>
+<area shape="rect" id="Node000007" href="$utils_8h.html#af76626a1e7d194b299996185c74ecebb" title=" " alt="" coords="271,104,365,129"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="182,114,257,114,257,119,182,119"/>
+<area shape="rect" id="Node000008" href="$fileutils_8h.html#a8876ee512bdc21e4a5d56fcd31f3a72c" title=" " alt="" coords="276,153,360,179"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="152,127,263,151,262,157,151,132"/>
+<area shape="rect" id="Node000003" href="$rna_8h.html#ab4f890346688074ac5925e7dbb651e88" title=" " alt="" coords="459,5,556,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="367,52,444,32,446,37,368,57"/>
+<area shape="rect" id="Node000005" href="$rna_8h.html#a038fcdaffe1a2d4a01e1ea5a6d33eebd" title=" " alt="" coords="470,55,545,80"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="407,65,456,65,456,70,407,70"/>
+<area shape="rect" id="Node000006" href="$rna_8h.html#a329ec35a7b1030bc08e9fc2f5eb417c7" title=" " alt="" coords="455,104,560,129"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="368,77,445,98,444,103,367,83"/>
+<area shape="rect" id="Node000004" href="$utils_8h.html#a5658cadaded560904c4b98f4af905a3d" title=" " alt="" coords="608,31,687,56"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="557,24,595,31,594,36,556,29"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="544,58,594,50,595,55,545,64"/>
+</map>
