@@ -37,7 +37,7 @@ for (p1,p2) in pairs:
     h = [x[p1],x[p2]]
     k = [y[p1],y[p2]]
     plt.plot(h,k,'blue',zorder=1,linestyle="dotted")
-figure.set_size_inches((12,12))
+figure.set_size_inches((24,24))
 disconnect_zoom = zoom_factory(axis)
 pan_handler = panhandler(figure)
 plt.savefig("files/structure.png")
